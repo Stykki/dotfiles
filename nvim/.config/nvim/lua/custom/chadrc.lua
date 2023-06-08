@@ -11,7 +11,7 @@ local opt = vim.opt
 opt.scrolloff = 8
 opt.foldmethod = "expr"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
--- opt.foldenable = true
+opt.foldenable = false
 
 M.ui = {
   theme = 'catppuccin',
