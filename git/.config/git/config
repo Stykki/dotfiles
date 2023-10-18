@@ -3,6 +3,8 @@
   br = branch
   df = diff
   p = push
+  # Push upstream
+  pu = push -u origin HEAD
   rename = branch -m
   cem = commit --allow-empty
   ca = commit -a

@@ -4,10 +4,13 @@ local formatting = null_ls.builtins.formatting
 local lint = null_ls.builtins.diagnostics
 
 local sources = {
-   formatting.prettier,
+  formatting.prettierd.with({
+    extra_filetypes = { "markdown", "json", "html" },
+  })
 }
 
 null_ls.setup {
    debug = true,
    sources = sources,
 }
+

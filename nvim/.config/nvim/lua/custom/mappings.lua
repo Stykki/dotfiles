@@ -26,9 +26,13 @@ M.lspconfig = {
 
  M.general = {
   n = {
+
+    ["<leader>bo"] = {"<cmd>%bd|e#<cr>", "Close all buffers but the current one"},
     ["P"] = { "\"0p", "Paste from copy register"},
+    ["<leader>cf"] = {"<cmd> let @+=@% <CR>", "Coppy current filepath"},
     ["<leader>sc"] = { "<cmd> set rnu! <CR>", "Source config" },
     ["<leader>se"] = { "<cmd> cd ~/.config/nvim <CR>", "Edit config" },
+    ["<leader>sl"] = { "<cmd> Telescope live_grep_args <CR>", "Live grep args" },
     ["<leader>sv"] = {
       function()
         vim.diagnostic.open_float()

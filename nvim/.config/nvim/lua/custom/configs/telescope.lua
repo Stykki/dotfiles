@@ -49,7 +49,9 @@ local options = {
     },
   },
 
-  extensions_list = { "themes", "terms", "emoji" },
+
+
+  extensions_list = { "themes", "terms", "emoji", "live_grep_args" },
 }
 
 return options

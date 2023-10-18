@@ -5,6 +5,8 @@ M.mappings = require 'custom.mappings'
 
 vim.wo.relativenumber = true
 
+vim.g.vscode_snippets_path = vim.fn.stdpath "config" .. '/lua/custom/snippets'
+
 local opt = vim.opt
 
 
