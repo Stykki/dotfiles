@@ -2,9 +2,9 @@
 
 layout {
     pane split_direction="vertical" {
-            pane size="15%" {
-                plugin location="zellij:strider"
-            }
+            // pane size="15%" {
+            //   plugin location="zellij:strider"
+            //}
             children
         }
 
@@ -22,20 +22,20 @@ layout {
             hide_frame_for_single_pane "true"
 
 
-            mode_normal        "#[bg=#89B4FA] {name} "
-            mode_locked        "#[bg=#89B4FA] {name} "
-            mode_resize        "#[bg=#89B4FA] {name} "
-            mode_pane          "#[bg=#89B4FA] {name} "
-            mode_tab           "#[bg=#89B4FA] {name} "
-            mode_scroll        "#[bg=#89B4FA] {name} "
-            mode_enter_search  "#[bg=#89B4FA] {name} "
-            mode_search        "#[bg=#89B4FA] {name} "
-            mode_rename_tab    "#[bg=#89B4FA] {name} "
-            mode_rename_pane   "#[bg=#89B4FA] {name} "
-            mode_session       "#[bg=#89B4FA] {name} "
-            mode_move          "#[bg=#89B4FA] {name} "
-            mode_prompt        "#[bg=#89B4FA] {name} "
-            mode_tmux          "#[bg=#ffc387] {name} "
+            mode_normal        "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_locked        "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_resize        "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_pane          "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_tab           "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_scroll        "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_enter_search  "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_search        "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_rename_tab    "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_rename_pane   "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_session       "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_move          "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_prompt        "#[fg=#f8f8f2,bg=#89B4FA] {name} "
+            mode_tmux          "#[fg=#f8f8f2,bg=#ffc387] {name} "
 
             tab_normal   "#[fg=#6C7086] {name} "
             tab_active   "#[fg=#9399B2,bold,italic] {name} "
