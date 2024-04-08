@@ -1,0 +1,54 @@
+
+{
+  "UI Component Story": {
+    "scope": "typescriptreact",
+    "prefix": "uistory",
+    "body": [
+      "import { ComponentStory, ComponentMeta } from '@storybook/react'",
+      "import React from 'react'",
+      "import { Context_IS, Context_EN, Context_PL, Scale_414 } from 'storybook/decorators'",
+      "",
+      "import { ${TM_FILENAME_BASE/\\.stories//} } from './${TM_FILENAME_BASE/\\.stories//}'",
+      "",
+      "export default {",
+      "\ttitle: '$0/${TM_FILENAME_BASE/\\.stories//}',",
+      "\tcomponent: ${TM_FILENAME_BASE/\\.stories//},",
+      "\targs: {},",
+      "\targTypes: {},",
+      "\tparameters: {",
+      "\t\tlayout: 'fullscreen',",
+      "\t\t/** By default snapshots are made with 414 screen.",
+      "\t\t  * Consider adding 768 viewport for some stories to show what happens",
+      "\t\t  * with the view on wider screens */",
+      "\t\tchromatic: { viewports: [414] },",
+      "\t\tviewport: { defaultViewport: 'iphonexsmax' },",
+      "\t\t//mockdate: new Date('2022-11-25T12:00:00Z'),",
+      "\t\tapolloClient: { mocks: [] },",
+      "\t},",
+      "\tdecorators: [Scale_414],",
+      "} as ComponentMeta<typeof ${TM_FILENAME_BASE/\\.stories//}>",
+      "",
+      "const Template: ComponentStory<typeof ${TM_FILENAME_BASE/\\.stories//}> = (args) => <${TM_FILENAME_BASE/\\.stories//} {...args} />",
+      "",
+      "export const DefaultIS = Template.bind({})",
+      "DefaultIS.decorators = [Context_IS]",
+      "DefaultIS.args = {}",
+      "",
+      "export const DefaultEN = Template.bind({})",
+      "DefaultEN.decorators = [Context_EN]",
+      "DefaultEN.args = {}",
+      "",
+      "export const DefaultPL = Template.bind({})",
+      "DefaultPL.decorators = [Context_PL]",
+      "DefaultPL.args = {}",
+      ""
+    ]
+  },
+  "Function" : {
+    "scope": "typescript",
+    "prefix": ["fn"],
+    "body": [
+      "function"
+    ]
+  }
+}
