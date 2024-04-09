@@ -1,4 +1,3 @@
-
 local mappings = {
 	i = {
 		-- go to  beginning and end
@@ -106,6 +105,14 @@ local mappings = {
 
 	t = {
 		["<C-x>"] = { vim.api.nvim_replace_termcodes("<C-\\><C-N>", true, true, true), "Escape terminal mode" },
+		-- Navigate in and out out terminal windows with ctrl + vim motion 
+		["<C-h>"] = { vim.api.nvim_replace_termcodes("<C-\\><C-N><C-w>h", true, true, true) },
+		["<C-j>"] = { vim.api.nvim_replace_termcodes("<C-\\><C-N><C-w>j", true, true, true) },
+		["<C-k>"] = { vim.api.nvim_replace_termcodes("<C-\\><C-N><C-w>k", true, true, true) },
+		["<C-l>"] = { vim.api.nvim_replace_termcodes("<C-\\><C-N><C-w>l", true, true, true) },
+
+
+
 	},
 
 	x = {
