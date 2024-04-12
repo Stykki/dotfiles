@@ -1,0 +1,14 @@
+layout {
+    tab name="App" cwd="~/Documents/test/mobilebank-personal/" {
+        pane command="nvim"
+    }
+
+    tab name="Gql" cwd="~/Documents/code/graphql/graphql/" {
+        pane command="nvim"
+    }    
+
+    tab name="Runner" cwd="~/Documents" {
+        pane cwd="test/mobilebank-personal/" 
+        pane cwd="code/"     
+    }
+}
