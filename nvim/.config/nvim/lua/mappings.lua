@@ -102,6 +102,12 @@ local mappings = {
 			end,
 			"Lsp code action",
 		},
+		["K"] = {
+			function()
+				vim.lsp.buf.hover()
+			end,
+			"LSP hover",
+		}
 
 		-- Telescope
 		-- ["<leader>ff"] = {
