@@ -23,6 +23,11 @@ return {
 			lspconfig.css_variables.setup {
 				capabilities = vim.lsp.protocol.make_client_capabilities()
 			}
+
+
+			lspconfig.tailwindcss.setup {
+				capabilities = vim.lsp.protocol.make_client_capabilities()
+			}
 		end,
 	},
 }

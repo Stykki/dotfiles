@@ -95,6 +95,14 @@ local mappings = {
 			"LSP references",
 		},
 
+		["<leader>."] = {
+			function()
+				vim.lsp.buf.references()
+				vim.lsp.buf.code_action()
+			end,
+			"Lsp code action",
+		},
+
 		-- Telescope
 		-- ["<leader>ff"] = {
 		--	telescope.find_files,
@@ -105,7 +113,7 @@ local mappings = {
 
 	t = {
 		["<C-x>"] = { vim.api.nvim_replace_termcodes("<C-\\><C-N>", true, true, true), "Escape terminal mode" },
-		-- Navigate in and out out terminal windows with ctrl + vim motion 
+		-- Navigate in and out out terminal windows with ctrl + vim motion
 		["<C-h>"] = { vim.api.nvim_replace_termcodes("<C-\\><C-N><C-w>h", true, true, true) },
 		["<C-j>"] = { vim.api.nvim_replace_termcodes("<C-\\><C-N><C-w>j", true, true, true) },
 		["<C-k>"] = { vim.api.nvim_replace_termcodes("<C-\\><C-N><C-w>k", true, true, true) },
