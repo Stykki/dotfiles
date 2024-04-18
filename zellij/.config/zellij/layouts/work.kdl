@@ -1,14 +1,51 @@
+
 layout {
-    tab name="App" cwd="~/Documents/test/mobilebank-personal/" {
-        pane command="nvim"
-    }
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
+                format_left   "{mode} #[fg=#89B4FA,bold]{session} {tabs}"
+                format_right  "{command_git_branch} {datetime}"
+                format_space  ""
 
-    tab name="Gql" cwd="~/Documents/code/graphql/graphql/" {
-        pane command="nvim"
-    }    
+                border_enabled  "false"
+                border_char     "─"
+                border_format   "#[fg=#6C7086]{char}"
+                border_position "top"
 
-    tab name="Runner" cwd="~/Documents" {
-        pane cwd="test/mobilebank-personal/" 
-        pane cwd="code/"     
+                hide_frame_for_single_pane "true"
+
+
+
+								mode_normal        "#[bg=blue,fg=#313244,bold] {name} "
+								mode_locked        "#[bg=blue,fg=#313244,bold] {name} "
+								mode_resize        "#[bg=blue,fg=#313244,bold] {name} "
+								mode_pane          "#[bg=blue,fg=#313244,bold] {name} "
+								mode_tab           "#[bg=blue,fg=#313244,bold] {name} "
+								mode_scroll        "#[bg=blue,fg=#313244,bold] {name} "
+								mode_enter_search  "#[bg=blue,fg=#313244,bold] {name} "
+								mode_search        "#[bg=blue,fg=#313244,bold] {name} "
+								mode_rename_tab    "#[bg=blue,fg=#313244,bold] {name} "
+								mode_rename_pane   "#[bg=blue,fg=#313244,bold] {name} "
+								mode_session       "#[bg=blue,fg=#313244,bold] {name} "
+								mode_move          "#[bg=blue,fg=#313244,bold] {name} "
+								mode_prompt        "#[bg=blue,fg=#313244,bold] {name} "
+								mode_tmux          "#[bg=blue,fg=#313244,bold] {name} "
+
+
+
+                tab_normal   "#[fg=#6C7086] {name} "
+                tab_active   "#[fg=#9399B2,bold,italic] {name} "
+
+                command_git_branch_command     "git rev-parse --abbrev-ref HEAD"
+                command_git_branch_format      "#[fg=blue] {stdout} "
+                command_git_branch_interval    "10"
+                command_git_branch_rendermode  "static"
+
+                datetime        "#[fg=#6C7086,bold] {format} "
+                datetime_format "%A, %d %b %Y %H:%M"
+                datetime_timezone "Iceland"
+            }
+        }
     }
 }

@@ -25,6 +25,7 @@ lspconfig.eslint.setup({
 lspconfig.svelte.setup({
   filetypes = {"svelte"},
   capabilities = capabilities,
+  root_dir = lspconfig.util.root_pattern("package.json"),
 })
 
 lspconfig.rust_analyzer.setup({
