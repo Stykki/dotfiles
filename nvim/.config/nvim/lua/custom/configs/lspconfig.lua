@@ -36,11 +36,20 @@ lspconfig.rust_analyzer.setup({
   settings = {
     ['rust-analyzer'] = {
       cargo = {
-        allFeatures = true
+        allFeatures = true,
       }
     }
   }
 })
+
+lspconfig.zls.setup({
+  on_attach = on_attach,
+  capabilities = capabilities,
+  filetypes = {"zig"},
+})
+
+
+
 
 
 -- lspconfig.tailwindcss.setup({

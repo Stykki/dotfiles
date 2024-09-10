@@ -34,6 +34,18 @@ M.lspconfig = {
     ["<leader>se"] = { "<cmd> cd ~/.config/nvim <CR>", "Edit config" },
     ["<leader>sl"] = { "<cmd> Telescope live_grep_args <CR>", "Live grep args" },
     ["<leader>fs"] = { "<cmd> Telescope git_files<CR>", "Fuzzy git files" },
+
+    ["<leader>cpcq"]={
+        function()
+          local input = vim.fn.input("Quick Chat: ")
+          if input ~= "" then
+            require("CopilotChat").ask(input, { selection = require("CopilotChat.select").buffer })
+          end
+        end,
+        desc = "CopilotChat - Quick chat",
+      },
+
+
     ["<leader>sv"] = {
       function()
         vim.diagnostic.open_float()
