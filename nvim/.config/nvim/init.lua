@@ -699,7 +699,6 @@ require('lazy').setup({
         eslint = {},
         prettierd = {},
         --
-
         elixir = {},
         lua_ls = {
           -- cmd = {...},
