@@ -1,6 +1,6 @@
 -- Create a buffer-local command that takes a shell command,
 -- processes it with your sed transformation, and populates the quickfix list
-vim.api.nvim_buf_create_user_command(0, "QuickfixCommand", function(opts)
+vim.api.nvim_create_user_command("QuickfixCommand", function(opts)
 	-- Get the command from arguments
 	local cmd = opts.args
 
@@ -39,5 +39,4 @@ vim.api.nvim_buf_create_user_command(0, "QuickfixCommand", function(opts)
 	vim.cmd("copen")
 end, { nargs = "+", desc = "Transform command output and send to quickfix list" })
 
-
-return 
+return

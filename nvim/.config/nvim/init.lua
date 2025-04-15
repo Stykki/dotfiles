@@ -367,6 +367,12 @@ require("lazy").setup({
 
 			-- Useful for getting pretty icons, but requires a Nerd Font.
 			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
+			{
+				"nvim-telescope/telescope-live-grep-args.nvim",
+				-- This will not install any breaking changes.
+				-- For major updates, this must be adjusted manually.
+				version = "^1.0.0",
+			},
 		},
 		config = function()
 			-- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -704,12 +710,14 @@ require("lazy").setup({
 				--
 				-- But for many setups, the LSP (`tsserver`) will work just fine
 				ts_ls = {},
+				biome = {},
 				eslint = {},
 				prettierd = {},
 				rust_analyzer = {},
 				tailwindcss = {},
 				astro = {},
 				gopls = {},
+				elixir = {},
 				["svelte-language-server"] = {},
 				-- elixir = {},
 				lua_ls = {
@@ -1053,6 +1061,7 @@ require("lazy").setup({
 	--  Uncomment any of the lines below to enable them (you will need to restart nvim).
 	--
 	require("kickstart.plugins.debug"),
+	require("kickstart.plugins.asyncrun"),
 	-- require 'kickstart.plugins.indent_line',
 	-- require 'kickstart.plugins.lint',
 	require("kickstart.plugins.markdown"),
