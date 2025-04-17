@@ -717,7 +717,7 @@ require("lazy").setup({
 				tailwindcss = {},
 				astro = {},
 				gopls = {},
-				elixir = {},
+				-- elixir = {},
 				["svelte-language-server"] = {},
 				-- elixir = {},
 				lua_ls = {
