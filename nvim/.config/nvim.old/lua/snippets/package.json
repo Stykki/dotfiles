@@ -1,0 +1,14 @@
+{
+  "name": "stk-snippets",
+  "engines": {
+    "vscode": "^1.11.0"
+  },
+  "contributes": {
+    "snippets": [
+      {
+        "language": "typescriptreact",
+        "path": "./snippets/javascript/ts-react.json"
+      }
+    ]
+  }
+}
