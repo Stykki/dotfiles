@@ -1,0 +1,26 @@
+{
+  "Page_ISENPL": {
+    "prefix": "page-isenpl",
+    "body": [
+      "export const ${1:Default} = Template.bind({})",
+      "${1:Default}.decorators = [Context_ISENPL({ context: 'page' })]",
+      "${1:Default}.parameters = Context_ISENPL.parameters",
+      "${1:Default}.args = {}"
+    ],
+    "description": "Snippet for Page_ISENPL"
+  },
+  "Page_Tablet": {
+    "prefix": "page-tablet",
+    "body": [
+      "export const ${1:Tablet} = Template.bind({})",
+      "${1:Tablet}.decorators = [Context_IS]",
+      "${1:Tablet}.parameters = {",
+      "  viewport: { defaultViewport: 'ipad12p' },",
+      "  chromatic: {",
+      "    viewports: [1200],",
+      "  },",
+      "}"
+    ],
+    "description": "Snippet for Page_Tablet"
+  }
+}
