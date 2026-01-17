@@ -70,8 +70,12 @@ return {
           mappings = {
             i = { ['<c-f>'] = 'to_fuzzy_refine' },
           },
+          n = {
+            ['<c-d>'] = require('telescope.actions').delete_buffer,
+          }, --
           sorting_strategy = 'ascending',
           layout_strategy = 'horizontal',
+          hidden = true,
           layout_config = {
             horizontal = {
               prompt_position = 'top',

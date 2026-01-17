@@ -54,4 +54,20 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+local function insertFileName()
+  vim.fn.setreg('+', vim.fn.expand '%:t') -- write to clippoard
+end
+
+local function insertAbsolutePath()
+  vim.fn.setreg('+', vim.fn.expand '%:p') -- write to clippoard
+end
+
+local function insertRelativeFilePath()
+  vim.fn.setreg('+', vim.fn.expand '%:.') -- write to clippoard
+end
+
+vim.keymap.set('n', '<leader>pa', insertAbsolutePath, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>pr', insertRelativeFilePath, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>pn', insertFileName, { noremap = true, silent = true })
+
 -- vim: ts=2 sts=2 sw=2 et
