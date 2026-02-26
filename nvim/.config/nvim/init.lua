@@ -116,3 +116,16 @@ require 'custom.commands'
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+-- Global Settings
+vim.opt.foldenable = false
+vim.opt.foldlevel = 99
+
+-- Local Settings (Apply these via autocmd or ftplugin for specific files)
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'typescript', 'javascript', 'rust', 'zig', 'cpp', 'c', 'python' },
+  callback = function()
+    vim.wo.foldmethod = 'expr'
+    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+  end,
+})
