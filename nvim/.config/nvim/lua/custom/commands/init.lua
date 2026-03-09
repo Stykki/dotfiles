@@ -3,4 +3,5 @@ return {
   require 'custom.commands.BranchFiles',
   require 'custom.commands.BufOnly',
   require 'custom.commands.GitLink',
+  require 'custom.commands.CopyPath',
 }
