@@ -9,21 +9,15 @@ return {
     'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
     'MunifTanjim/nui.nvim',
   },
-  cmd = 'Neotree',
   lazy = false,
   keys = {
-    { '<leader>e', ':Neotree reveal<CR>', { desc = 'NeoTree reveal' } },
+    { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
   opts = {
     filesystem = {
       window = {
         mappings = {
           ['\\'] = 'close_window',
-          ["P"] = { "toggle_preview", config = { use_float = false, use_image_nvim = true } },
-          ["<space>"] = {
-            "toggle_node",
-            nowait = true, -- disable `nowait` if you have existing combos starting with this char that you want to use 
-          }
         },
       },
     },

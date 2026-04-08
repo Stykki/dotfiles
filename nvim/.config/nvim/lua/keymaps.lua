@@ -1,73 +1,147 @@
--- [[ Basic Keymaps ]]
---  See `:help vim.keymap.set()`
+local keymap = vim.keymap.set
 
--- Clear highlights on search when pressing <Esc> in normal mode
---  See `:help hlsearch`
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-vim.keymap.set('n', ';', ':')
+-- Disable space in normal mode (reserved for leader)
+keymap("n", "<space>", "<Nop>", { desc = "Disable space (leader key)" })
 
--- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-vim.keymap.set('n', '<leader>k', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-vim.keymap.set('n', '<leader>bd', '<cmd>bd|e#|bd#<CR>', { desc = 'Close all buffers except the current one' })
+-- Semicolon as colon (enter command mode)
+keymap("n", ";", ":", { desc = "Command mode" })
 
--- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
--- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
--- is not what someone will guess without a bit more experience.
---
--- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
--- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+-- Movement
+keymap("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, desc = "Move down (visual line)" })
+keymap("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true, desc = "Move up (visual line)" })
+keymap("n", "<C-d>", "<C-d>zz", { desc = "Half page down and center" })
+keymap("n", "<C-u>", "<C-u>zz", { desc = "Half page up and center" })
 
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+-- Save and quit
+keymap("n", "<Leader>w", "<cmd>w!<CR>", { silent = true, desc = "Save file" })
+keymap("n", "<Leader>q", "<cmd>q<CR>", { silent = true, desc = "Quit" })
 
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- Tabs
+keymap("n", "<Leader>te", "<cmd>tabnew<CR>", { silent = true, desc = "New tab" })
+keymap("n", "<Leader>tn", "<cmd>tabn<CR>", { silent = true, desc = "Next tab" })
+keymap("n", "<Leader>tp", "<cmd>tabp<CR>", { silent = true, desc = "Previous tab" })
 
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+-- Split windows
+keymap("n", "<Leader>_", "<cmd>vsplit<CR>", { silent = true, desc = "Vertical split" })
+keymap("n", "<Leader>-", "<cmd>split<CR>", { silent = true, desc = "Horizontal split" })
 
--- [[ Basic Autocommands ]]
---  See `:help lua-guide-autocommands`
+-- Window navigation
+keymap("n", "<C-h>", "<C-w>h", { silent = true, desc = "Move to left window" })
+keymap("n", "<C-j>", "<C-w>j", { silent = true, desc = "Move to window below" })
+keymap("n", "<C-k>", "<C-w>k", { silent = true, desc = "Move to window above" })
+keymap("n", "<C-l>", "<C-w>l", { silent = true, desc = "Move to right window" })
 
--- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
---  See `:help vim.hl.on_yank()`
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-  callback = function()
-    vim.hl.on_yank()
-  end,
-})
+-- Copy and paste
+keymap("v", "<Leader>p", '"_dP', { desc = "Paste without yanking replaced text" })
 
-local function insertFileName()
-  vim.fn.setreg('+', vim.fn.expand '%:t') -- write to clippoard
-end
+-- Terminal
+keymap("t", "<Esc>", "<C-\\><C-N>", { desc = "Exit terminal mode" })
 
-local function insertAbsolutePath()
-  vim.fn.setreg('+', vim.fn.expand '%:p') -- write to clippoard
-end
+-- Directory navigation
+keymap("n", "<leader>cd", '<cmd>lua vim.fn.chdir(vim.fn.expand("%:p:h"))<CR>', { desc = "Change to file's directory" })
 
-local function insertRelativeFilePath()
-  vim.fn.setreg('+', vim.fn.expand '%:.') -- write to clippoard
-end
+-- LSP
+keymap("n", "grd", "<cmd>lua vim.lsp.buf.definition()<CR>", { noremap = true, silent = true, desc = "Go to definition" })
+keymap("n", "<leader>.", vim.lsp.buf.code_action, { desc = "Code actions" })
+keymap({ "n", "v" }, "<leader>fm", function()
+    require("conform").format({ async = true, lsp_format = "fallback" })
+end, { desc = "Format buffer" })
 
-vim.keymap.set('n', '<leader>pa', insertAbsolutePath, { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>pr', insertRelativeFilePath, { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>pn', insertFileName, { noremap = true, silent = true })
+-- Diagnostics
+keymap("n", "<leader>dn", "<cmd>lua vim.diagnostic.jump({count = 1})<CR>", { noremap = true, silent = true, desc = "Next diagnostic" })
+keymap("n", "<leader>dp", "<cmd>lua vim.diagnostic.jump({count = -1})<CR>", { noremap = true, silent = true, desc = "Previous diagnostic" })
+keymap("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, { desc = "Next diagnostic" })
+keymap("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, { desc = "Previous diagnostic" })
 
--- vim: ts=2 sts=2 sw=2 et
+-- File explorers
+keymap("n", "<leader>of", "<cmd>Oil<CR>", { desc = "Open Oil at file's directory" })
+keymap("n", "<leader>oc", function() require("oil").open(vim.fn.getcwd()) end, { desc = "Open Oil at cwd" })
+
+-- Plugin management
+keymap("n", "<leader>ps", "<cmd>lua vim.pack.update()<CR>", { desc = "Update plugins" })
+
+-- Git
+keymap("n", "<leader>gs", "<cmd>Git<CR>", { noremap = true, silent = true, desc = "Git status (Fugitive)" })
+keymap("n", "<leader>gB", function() Snacks.gitbrowse() end, { desc = "Open in browser (GitHub/GitLab)" })
+
+-- Snacks picker (primary search)
+keymap("n", "<leader>sf", function() Snacks.picker.files() end, { desc = "Search files" })
+keymap("n", "<leader>sg", function() Snacks.picker.grep() end, { desc = "Search by grep" })
+keymap("n", "<leader>sh", function() Snacks.picker.help() end, { desc = "Search help tags" })
+keymap("n", "<leader>sb", function() Snacks.picker.buffers() end, { desc = "Search buffers" })
+keymap("n", "<leader>sr", function() Snacks.picker.recent() end, { desc = "Search recent files" })
+keymap("n", "<leader>sd", function() Snacks.picker.diagnostics() end, { desc = "Search diagnostics" })
+keymap("n", "<leader>sk", function() Snacks.picker.keymaps() end, { desc = "Search keymaps" })
+keymap("n", "<leader>sw", function() Snacks.picker.grep_word() end, { desc = "Search word under cursor" })
+keymap("n", "<leader>/", function() Snacks.picker.grep() end, { desc = "Grep in project" })
+keymap("n", "<leader><leader>", function() Snacks.picker.smart() end, { desc = "Smart find (files + recent)" })
+
+-- Git search
+keymap("n", "<leader>sG", function() Snacks.picker.git_status() end, { desc = "Search git status" })
+keymap("n", "<leader>sc", function() Snacks.picker.git_log() end, { desc = "Search git commits" })
+keymap("n", "<leader>sB", function()
+    -- Get main branch name
+    local handle = io.popen("git rev-parse --abbrev-ref origin/HEAD 2>/dev/null")
+    local remote_head = handle and handle:read("*l") or ""
+    if handle then handle:close() end
+    local main_branch = "main"
+    if remote_head and remote_head ~= "" then
+        main_branch = remote_head:gsub("origin/", "")
+    end
+    -- Use fzf-lua to search files changed in branch
+    require("fzf-lua").files({
+        cmd = string.format("git diff --name-only %s...", main_branch),
+        prompt = "Branch Files> ",
+    })
+end, { desc = "Search branch changes (vs main)" })
+
+-- Snacks UI
+keymap("n", "<leader>un", function() Snacks.notifier.hide() end, { desc = "Dismiss all notifications" })
+
+-- fzf-lua (secondary search)
+keymap("n", "<leader>Ff", "<cmd>FzfLua files<CR>", { desc = "Find files (fzf)" })
+keymap("n", "<leader>Fg", "<cmd>FzfLua grep_project<CR>", { desc = "Grep project (fzf)" })
+keymap("n", "<leader>Fl", "<cmd>FzfLua grep_last<CR>", { desc = "Repeat last grep (fzf)" })
+keymap("n", "<leader>Fh", "<cmd>FzfLua help_tags<CR>", { desc = "Help tags (fzf)" })
+
+-- Command runner
+keymap("n", "<leader>co", "<cmd>CommandExecute<CR>", { desc = "Execute command" })
+keymap("n", "<leader>cr", "<cmd>CommandExecuteLast<CR>", { desc = "Execute last command" })
+keymap({"x", "v"}, "<leader>co", "<cmd>CommandExecuteSelection<CR>", { desc = "Execute selection as command" })
+
+-- Copilot
+keymap("i", "<S-Tab>", 'copilot#Accept("\\<Tab>")', { expr = true, replace_keycodes = false, desc = "Accept Copilot suggestion" })
+
+-- Yank inside quotes/brackets (any type)
+keymap("n", "yiq", function()
+    -- Try each quote type
+    for _, char in ipairs({ '"', "'", '`' }) do
+        local ok = pcall(vim.cmd, 'normal! yi' .. char)
+        if ok and vim.fn.getreg('"') ~= '' then return end
+    end
+end, { desc = "Yank inside quotes" })
+
+keymap("n", "yib", function()
+    -- Try each bracket type
+    for _, char in ipairs({ ')', ']', '}', '>' }) do
+        local ok = pcall(vim.cmd, 'normal! yi' .. char)
+        if ok and vim.fn.getreg('"') ~= '' then return end
+    end
+end, { desc = "Yank inside brackets" })
+
+-- Special utilities
+keymap("n", "<leader>ip", function()
+    require("fzf-lua").files({
+        actions = {
+            ["default"] = function(selected)
+                local file = selected[1]
+                local rel_path = vim.fn.fnamemodify(file, ":.")
+                rel_path = rel_path:gsub(" ", "\\ ")
+                if not rel_path:match("^%.?/") then
+                    rel_path = "./" .. rel_path
+                end
+                vim.api.nvim_put({ rel_path }, "l", true, false)
+            end,
+        },
+    })
+end, { desc = "Insert relative file path" })
