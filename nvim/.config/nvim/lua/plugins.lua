@@ -4,11 +4,12 @@ vim.pack.add({
     { src = "https://github.com/mason-org/mason.nvim" },
     { src = "https://github.com/ibhagwan/fzf-lua" },
     { src = "https://github.com/lewis6991/gitsigns.nvim" },
-    { src = "https://github.com/saghen/blink.cmp",
-     version = vim.version.range("^1"),
+    {
+        src = "https://github.com/saghen/blink.cmp",
+        version = vim.version.range("^1"),
     },
     { src = "https://github.com/vieitesss/command.nvim", version = "main" },
-    { src = "https://github.com/github/copilot.vim" },
+    { src = "https://github.com/zbirenbaum/copilot.lua" },
     { src = "https://github.com/stevearc/oil.nvim" },
     { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
     { src = "https://github.com/folke/snacks.nvim" },
@@ -33,7 +34,6 @@ require("catppuccin").setup({
         blink_cmp = true,
     },
 })
-
 
 -- Snacks.nvim
 require("snacks").setup({
@@ -67,18 +67,27 @@ require("which-key").setup({
 
 require("command").setup({})
 require("mason").setup({})
+
+-- Copilot (AI completion via LSP)
+require("copilot").setup({
+    suggestion = { enabled = false }, -- We use blink.cmp popup instead
+    panel = { enabled = false },
+})
+
+-- Copilot icon highlight (GitHub green)
+vim.api.nvim_set_hl(0, "BlinkCmpKindCopilot", { fg = "#6CC644" })
 require("gitsigns").setup({
     signcolumn = false,
     attach_to_untracked = true,
     signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
+        add = { text = "+" },
+        change = { text = "~" },
+        delete = { text = "_" },
+        topdelete = { text = "‾" },
+        changedelete = { text = "~" },
     },
     on_attach = function(bufnr)
-        local gitsigns = require('gitsigns')
+        local gitsigns = require("gitsigns")
         local function map(mode, l, r, opts)
             opts = opts or {}
             opts.buffer = bufnr
@@ -86,45 +95,69 @@ require("gitsigns").setup({
         end
 
         -- Navigation
-        map('n', ']c', function()
+        map("n", "]c", function()
             if vim.wo.diff then
-                vim.cmd.normal({ ']c', bang = true })
+                vim.cmd.normal({ "]c", bang = true })
             else
-                gitsigns.nav_hunk('next')
+                gitsigns.nav_hunk("next")
             end
-        end, { desc = 'Next git hunk' })
+        end, { desc = "Next git hunk" })
 
-        map('n', '[c', function()
+        map("n", "[c", function()
             if vim.wo.diff then
-                vim.cmd.normal({ '[c', bang = true })
+                vim.cmd.normal({ "[c", bang = true })
             else
-                gitsigns.nav_hunk('prev')
+                gitsigns.nav_hunk("prev")
             end
-        end, { desc = 'Previous git hunk' })
+        end, { desc = "Previous git hunk" })
 
         -- Actions (visual mode)
-        map('v', '<leader>hs', function()
-            gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
-        end, { desc = 'Stage hunk' })
-        map('v', '<leader>hr', function()
-            gitsigns.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
-        end, { desc = 'Reset hunk' })
+        map("v", "<leader>hs", function()
+            gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+        end, { desc = "Stage hunk" })
+        map("v", "<leader>hr", function()
+            gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+        end, { desc = "Reset hunk" })
 
         -- Actions (normal mode)
-        map('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'Stage hunk' })
-        map('n', '<leader>hr', gitsigns.reset_hunk, { desc = 'Reset hunk' })
-        map('n', '<leader>hS', gitsigns.stage_buffer, { desc = 'Stage buffer' })
-        map('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = 'Undo stage hunk' })
-        map('n', '<leader>hR', gitsigns.reset_buffer, { desc = 'Reset buffer' })
-        map('n', '<leader>hp', gitsigns.preview_hunk, { desc = 'Preview hunk' })
-        map('n', '<leader>hb', gitsigns.blame_line, { desc = 'Blame line' })
-        map('n', '<leader>hB', function() gitsigns.blame_line({ full = true }) end, { desc = 'Blame line (full)' })
-        map('n', '<leader>hd', gitsigns.diffthis, { desc = 'Diff against index' })
-        map('n', '<leader>hD', function() gitsigns.diffthis('@') end, { desc = 'Diff against last commit' })
+        map("n", "<leader>hs", gitsigns.stage_hunk, { desc = "Stage hunk" })
+        map("n", "<leader>hr", gitsigns.reset_hunk, { desc = "Reset hunk" })
+        map("n", "<leader>hS", gitsigns.stage_buffer, { desc = "Stage buffer" })
+        map(
+            "n",
+            "<leader>hu",
+            gitsigns.undo_stage_hunk,
+            { desc = "Undo stage hunk" }
+        )
+        map("n", "<leader>hR", gitsigns.reset_buffer, { desc = "Reset buffer" })
+        map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "Preview hunk" })
+        map("n", "<leader>hb", gitsigns.blame_line, { desc = "Blame line" })
+        map("n", "<leader>hB", function()
+            gitsigns.blame_line({ full = true })
+        end, { desc = "Blame line (full)" })
+        map(
+            "n",
+            "<leader>hd",
+            gitsigns.diffthis,
+            { desc = "Diff against index" }
+        )
+        map("n", "<leader>hD", function()
+            gitsigns.diffthis("@")
+        end, { desc = "Diff against last commit" })
 
         -- Toggles
-        map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = 'Toggle line blame' })
-        map('n', '<leader>td', gitsigns.preview_hunk_inline, { desc = 'Toggle deleted inline' })
+        map(
+            "n",
+            "<leader>tb",
+            gitsigns.toggle_current_line_blame,
+            { desc = "Toggle line blame" }
+        )
+        map(
+            "n",
+            "<leader>td",
+            gitsigns.preview_hunk_inline,
+            { desc = "Toggle deleted inline" }
+        )
     end,
 })
 require("blink.cmp").setup({
@@ -166,7 +199,33 @@ require("blink.cmp").setup({
         },
     },
 
-    sources = { default = { "lsp" } },
+    sources = {
+        default = { "copilot", "lsp" }, -- Copilot first for priority in menu
+        providers = {
+            copilot = {
+                name = "Copilot",
+                module = "sources.copilot",
+                score_offset = 100, -- Boost Copilot to top of completion list
+                async = true,
+                enabled = function()
+                    return vim.tbl_contains({
+                        "javascript", "javascriptreact",
+                        "typescript", "typescriptreact",
+                        "html", "css", "scss",
+                        "json", "jsonc",
+                        "vue", "svelte", "astro",
+                    }, vim.bo.filetype)
+                end,
+                opts = {
+                    max_completions = 3,
+                    -- TRIGGER BEHAVIOR OPTIONS:
+                    -- debounce = 75,    -- Default: wait 75ms after typing
+                    -- debounce = false, -- Instant: trigger on every keystroke
+                    -- debounce = 200,   -- Slower: fewer API calls, less responsive
+                },
+            },
+        },
+    },
 })
 
 local actions = require("fzf-lua.actions")
@@ -204,28 +263,45 @@ require("fzf-lua").setup({
 })
 
 -- Conform (formatting with prettier/eslint)
+local prettier_fmt = { "prettierd", "prettier", stop_after_first = true }
+
+local function js_formatter(bufnr)
+    if
+        vim.fs.root(bufnr, {
+            "vite.config.ts",
+            "vite.config.js",
+            "vite.config.mts",
+            "vite.config.mjs",
+        })
+    then
+        return {} -- oxfmt LSP handles formatting via lsp_format = "fallback"
+    end
+    return prettier_fmt
+end
+
 require("conform").setup({
     notify_on_error = false,
     format_on_save = function(bufnr)
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-            return nil
-        end
-        return {
-            timeout_ms = 500,
-            lsp_format = "fallback",
-        }
+        return nil
+        -- local disable_filetypes = { c = true, cpp = true }
+        -- if disable_filetypes[vim.bo[bufnr].filetype] then
+        --     return nil
+        -- end
+        -- return {
+        --     timeout_ms = 500,
+        --     lsp_format = "fallback",
+        -- }
     end,
     formatters_by_ft = {
         lua = { "stylua" },
-        javascript = { "prettierd", "prettier", stop_after_first = true },
-        typescript = { "prettierd", "prettier", stop_after_first = true },
-        typescriptreact = { "prettierd", "prettier", stop_after_first = true },
-        javascriptreact = { "prettierd", "prettier", stop_after_first = true },
-        json = { "prettierd", "prettier", stop_after_first = true },
-        html = { "prettierd", "prettier", stop_after_first = true },
-        css = { "prettierd", "prettier", stop_after_first = true },
-        markdown = { "prettierd", "prettier", stop_after_first = true },
+        javascript = js_formatter,
+        typescript = js_formatter,
+        typescriptreact = js_formatter,
+        javascriptreact = js_formatter,
+        json = prettier_fmt,
+        html = prettier_fmt,
+        css = prettier_fmt,
+        markdown = prettier_fmt,
     },
 })
 

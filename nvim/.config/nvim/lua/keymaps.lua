@@ -48,6 +48,7 @@ keymap({ "n", "v" }, "<leader>fm", function()
 end, { desc = "Format buffer" })
 
 -- Diagnostics
+keymap("n", "<leader>dk", vim.diagnostic.open_float, { desc = "Show line diagnostics" })
 keymap("n", "<leader>dn", "<cmd>lua vim.diagnostic.jump({count = 1})<CR>", { noremap = true, silent = true, desc = "Next diagnostic" })
 keymap("n", "<leader>dp", "<cmd>lua vim.diagnostic.jump({count = -1})<CR>", { noremap = true, silent = true, desc = "Previous diagnostic" })
 keymap("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, { desc = "Next diagnostic" })
@@ -78,6 +79,7 @@ keymap("n", "<leader><leader>", function() Snacks.picker.smart() end, { desc = "
 
 -- Git search
 keymap("n", "<leader>sG", function() Snacks.picker.git_status() end, { desc = "Search git status" })
+keymap("n", "<leader>st", function() Snacks.picker.git_status() end, { desc = "Search git modified files" })
 keymap("n", "<leader>sc", function() Snacks.picker.git_log() end, { desc = "Search git commits" })
 keymap("n", "<leader>sB", function()
     -- Get main branch name
@@ -89,9 +91,13 @@ keymap("n", "<leader>sB", function()
         main_branch = remote_head:gsub("origin/", "")
     end
     -- Use fzf-lua to search files changed in branch
-    require("fzf-lua").files({
-        cmd = string.format("git diff --name-only %s...", main_branch),
+    require("fzf-lua").fzf_exec(string.format("git diff --name-only %s...", main_branch), {
         prompt = "Branch Files> ",
+        previewer = "builtin",
+        actions = {
+            ["default"] = require("fzf-lua.actions").file_edit_or_qf,
+            ["ctrl-q"] = require("fzf-lua.actions").file_sel_to_qf,
+        },
     })
 end, { desc = "Search branch changes (vs main)" })
 
@@ -109,8 +115,8 @@ keymap("n", "<leader>co", "<cmd>CommandExecute<CR>", { desc = "Execute command" 
 keymap("n", "<leader>cr", "<cmd>CommandExecuteLast<CR>", { desc = "Execute last command" })
 keymap({"x", "v"}, "<leader>co", "<cmd>CommandExecuteSelection<CR>", { desc = "Execute selection as command" })
 
--- Copilot
-keymap("i", "<S-Tab>", 'copilot#Accept("\\<Tab>")', { expr = true, replace_keycodes = false, desc = "Accept Copilot suggestion" })
+-- Copilot suggestions now appear in blink.cmp popup
+-- Accept with <C-n> (select_and_accept) or navigate with <C-j>/<C-k>
 
 -- Yank inside quotes/brackets (any type)
 keymap("n", "yiq", function()

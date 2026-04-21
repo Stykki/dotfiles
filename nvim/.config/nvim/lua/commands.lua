@@ -1,3 +1,33 @@
+-- ToggleTsGo: Switch between ts_ls and tsgo for TypeScript
+vim.api.nvim_create_user_command("ToggleTsGo", function()
+    local ts_clients = vim.lsp.get_clients({ name = "ts_ls" })
+    local tsgo_clients = vim.lsp.get_clients({ name = "tsgo" })
+
+    if #ts_clients > 0 then
+        -- ts_ls is active, switch to tsgo
+        vim.lsp.enable("ts_ls", false)
+        for _, client in ipairs(ts_clients) do
+            client:stop(true)
+        end
+        vim.lsp.enable("tsgo", true)
+        vim.notify("Switched to tsgo", vim.log.levels.INFO)
+    elseif #tsgo_clients > 0 then
+        -- tsgo is active, switch to ts_ls
+        vim.lsp.enable("tsgo", false)
+        for _, client in ipairs(tsgo_clients) do
+            client:stop(true)
+        end
+        vim.lsp.enable("ts_ls", true)
+        vim.notify("Switched to ts_ls", vim.log.levels.INFO)
+    else
+        -- Neither is running, start tsgo
+        vim.lsp.enable("tsgo", true)
+        vim.notify("Started tsgo", vim.log.levels.INFO)
+    end
+end, {
+    desc = "Toggle between ts_ls and tsgo for TypeScript",
+})
+
 -- OpenBranchFiles: Open all files modified in current branch vs main
 vim.api.nvim_create_user_command("OpenBranchFiles", function()
     -- Detect the default branch (e.g., origin/main or origin/master)

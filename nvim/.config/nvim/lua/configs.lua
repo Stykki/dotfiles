@@ -27,7 +27,6 @@ opt.clipboard = "unnamedplus"
 
 vim.cmd.filetype("plugin indent on")
 
-vim.g.copilot_no_tab_map = true
 vim.g.netrw_liststyle = 1
 vim.g.netrw_sort_by = "size"
 
