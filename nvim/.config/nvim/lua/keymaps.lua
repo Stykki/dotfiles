@@ -118,23 +118,6 @@ keymap({"x", "v"}, "<leader>co", "<cmd>CommandExecuteSelection<CR>", { desc = "E
 -- Copilot suggestions now appear in blink.cmp popup
 -- Accept with <C-n> (select_and_accept) or navigate with <C-j>/<C-k>
 
--- Yank inside quotes/brackets (any type)
-keymap("n", "yiq", function()
-    -- Try each quote type
-    for _, char in ipairs({ '"', "'", '`' }) do
-        local ok = pcall(vim.cmd, 'normal! yi' .. char)
-        if ok and vim.fn.getreg('"') ~= '' then return end
-    end
-end, { desc = "Yank inside quotes" })
-
-keymap("n", "yib", function()
-    -- Try each bracket type
-    for _, char in ipairs({ ')', ']', '}', '>' }) do
-        local ok = pcall(vim.cmd, 'normal! yi' .. char)
-        if ok and vim.fn.getreg('"') ~= '' then return end
-    end
-end, { desc = "Yank inside brackets" })
-
 -- Special utilities
 keymap("n", "<leader>ip", function()
     require("fzf-lua").files({

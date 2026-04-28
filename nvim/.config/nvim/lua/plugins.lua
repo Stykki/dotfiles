@@ -14,6 +14,7 @@ vim.pack.add({
     { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
     { src = "https://github.com/folke/snacks.nvim" },
     { src = "https://github.com/echasnovski/mini.icons" },
+    { src = "https://github.com/echasnovski/mini.ai" },
     { src = "https://github.com/folke/which-key.nvim" },
     { src = "https://github.com/stevearc/conform.nvim" },
 })
@@ -22,6 +23,9 @@ vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin:" .. vim.env.PATH
 
 -- Mini icons (load first for other plugins to use)
 require("mini.icons").setup()
+
+-- Mini ai (text objects: iq/aq for quotes, ib/ab for brackets, etc.)
+require("mini.ai").setup({ n_lines = 500 })
 
 -- Catppuccin colorscheme
 require("catppuccin").setup({
