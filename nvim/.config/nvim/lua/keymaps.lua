@@ -103,6 +103,9 @@ end, { desc = "Search branch changes (vs main)" })
 
 -- Snacks UI
 keymap("n", "<leader>un", function() Snacks.notifier.hide() end, { desc = "Dismiss all notifications" })
+keymap("n", "<leader>uh", function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 })
+end, { desc = "Toggle inlay hints" })
 
 -- fzf-lua (secondary search)
 keymap("n", "<leader>Ff", "<cmd>FzfLua files<CR>", { desc = "Find files (fzf)" })

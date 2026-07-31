@@ -40,5 +40,9 @@
 [url "git@github.com:Stykki/wrk-tools.git"]
  insteadOf = https://github.com/Stykki/wrk-tools
 [user]
-	email = panoari@gmail.com
-	name = Stykki
+	email = vignir.o.love@landsbankinn.is
+	name = latvol
+[diff]
+	tool = nvimdiff
+[merge]
+	tool = nvimdiff

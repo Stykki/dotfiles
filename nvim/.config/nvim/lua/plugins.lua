@@ -19,7 +19,11 @@ vim.pack.add({
     { src = "https://github.com/stevearc/conform.nvim" },
 })
 
-vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin:" .. vim.env.PATH
+vim.env.PATH = vim.fn.stdpath("data")
+    .. "/mason/bin:"
+    .. vim.fn.expand("~/.cargo/bin")
+    .. ":"
+    .. vim.env.PATH
 
 -- Mini icons (load first for other plugins to use)
 require("mini.icons").setup()
@@ -66,6 +70,7 @@ require("which-key").setup({
         { "<leader>d", group = "Diagnostics" },
         { "<leader>c", group = "Command" },
         { "<leader>u", group = "UI/Toggle" },
+        { "<leader>r", group = "Rust" },
     },
 })
 
@@ -298,6 +303,7 @@ require("conform").setup({
     end,
     formatters_by_ft = {
         lua = { "stylua" },
+        rust = { "rustfmt", lsp_format = "fallback" },
         javascript = js_formatter,
         typescript = js_formatter,
         typescriptreact = js_formatter,
