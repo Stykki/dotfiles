@@ -50,9 +50,11 @@ vim.cmd.colorscheme("catppuccin")
 
 -- Local Settings (Apply these via autocmd or ftplugin for specific files)
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'typescript', 'javascript', 'rust', 'zig', 'cpp', 'c', 'python' },
+  pattern = { 'typescript', 'javascript', 'rust', 'zig', 'cpp', 'c', 'python', 'elixir', 'heex' },
   callback = function()
-    vim.wo.foldmethod = 'expr'
-    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    -- `vim.wo[0][0]` scopes the option to this buffer in this window, so it
+    -- does not leak into other buffers shown in the same window.
+    vim.wo[0][0].foldmethod = 'expr'
+    vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
   end,
 })

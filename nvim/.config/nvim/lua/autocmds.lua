@@ -4,7 +4,8 @@ local map = vim.keymap.set
 local bs = { buffer = true, silent = true }
 local brs = { buffer = true, remap = true, silent = true }
 
--- Enable treesitter highlighting
+-- Enable treesitter highlighting (Neovim provides it; nvim-treesitter only
+-- ships the parsers + queries). Injections work automatically once started.
 autocmd("FileType", {
     pattern = "*",
     callback = function(ev)
@@ -16,7 +17,10 @@ autocmd("FileType", {
         local ok = pcall(vim.treesitter.start, ev.buf)
         if not ok then
             -- No parser available, that's fine
+            return
         end
+        -- Experimental treesitter indentation (opt-in, note the quoting):
+        -- vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
     end,
     group = augroup("TreesitterHighlight", { clear = true }),
 })

@@ -50,9 +50,14 @@
       "rev": "29c50dd622e98e2fc5e12f71fba29e3fc34f1425",
       "src": "https://github.com/vieitesss/miniharp.nvim"
     },
+    "nvim-lspconfig": {
+      "rev": "16286347bdba1333c7d124d9de9fe6630731b2b2",
+      "src": "https://github.com/neovim/nvim-lspconfig"
+    },
     "nvim-treesitter": {
       "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
-      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter",
+      "version": "'main'"
     },
     "oil.nvim": {
       "rev": "0fcc83805ad11cf714a949c98c605ed717e0b83e",

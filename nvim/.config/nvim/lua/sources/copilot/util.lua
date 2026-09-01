@@ -53,19 +53,54 @@ function M.get_completions_from_lsp(client, params, cb)
     return client:request("textDocument/inlineCompletion", params, cb)
 end
 
---- Get length of the first line of text
---- @param text string
---- @param sep string|nil
+--- Convert a byte column to a utf-16 character column
+--- @param line string
+--- @param byte_col integer 0-indexed byte column
 --- @return integer
-function M.length_of_first_line(text, sep)
-    sep = sep or (text:find("\r") and "\r" or "\n") or "\n"
+function M.to_utf16_col(line, byte_col)
+    local ok, col = pcall(vim.str_utfindex, line, "utf-16", byte_col, false)
+    return ok and col or byte_col
+end
 
-    if not string.find(text, "[\r|\n]") then
-        return #text
+--- Convert a utf-16 character column to a byte column
+--- @param line string
+--- @param char_col integer 0-indexed utf-16 column
+--- @return integer
+function M.to_byte_col(line, char_col)
+    local ok, col = pcall(vim.str_byteindex, line, "utf-16", char_col, false)
+    return ok and col or math.min(char_col, #line)
+end
+
+--- Make sure a Copilot text edit never removes buffer text that the suggestion
+--- doesn't put back. Copilot commonly reports a range covering the whole current
+--- line, while `insertText` only contains the text up to (and after) the cursor.
+--- Applying that range verbatim wipes out unrelated trailing text, e.g. the
+--- `} />` after the cursor in a JSX attribute.
+--- @param range lsp.Range
+--- @param insert_text string
+--- @return lsp.Range
+function M.clamp_range_to_cursor(range, insert_text)
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    local cursor_line, cursor_byte = cursor[1] - 1, cursor[2]
+    local line = vim.api.nvim_get_current_line()
+    local cursor_char = M.to_utf16_col(line, cursor_byte)
+
+    -- Only a range ending after the cursor on the cursor's line can delete
+    -- text the user is not currently completing
+    if range["end"].line ~= cursor_line or range["end"].character <= cursor_char then
+        return range
     end
 
-    local matched = string.match(text, "([^" .. sep .. "]+)")
-    return matched and #matched or #text
+    -- Text between the cursor and the end of the replaced range
+    local suffix = line:sub(cursor_byte + 1, M.to_byte_col(line, range["end"].character))
+
+    -- The suggestion reproduces that text, so replacing it is safe
+    if suffix == "" or vim.endswith(insert_text, suffix) then
+        return range
+    end
+
+    range["end"] = { line = cursor_line, character = cursor_char }
+    return range
 end
 
 --- Remove common indentation from text for cleaner display
@@ -141,9 +176,16 @@ end
 function M.lsp_completion_items_to_blink_items(completions, kind_name, kind_icon, kind_hl)
     local items = {}
 
+    local cursor = vim.api.nvim_win_get_cursor(0)
+
     for _, completion in ipairs(completions) do
-        -- Update range end to first line length
-        completion.range["end"].character = M.length_of_first_line(completion.insertText)
+        -- Never trust the range blindly: keep it from eating text after the cursor
+        local range = completion.range
+            or {
+                start = { line = cursor[1] - 1, character = cursor[2] },
+                ["end"] = { line = cursor[1] - 1, character = cursor[2] },
+            }
+        range = M.clamp_range_to_cursor(vim.deepcopy(range), completion.insertText)
 
         local dedented_text = M.deindent(completion.insertText)
 
@@ -154,7 +196,7 @@ function M.lsp_completion_items_to_blink_items(completions, kind_name, kind_icon
             kind_hl = kind_hl,
             textEdit = {
                 newText = completion.insertText,
-                range = completion.range,
+                range = range,
             },
             documentation = {
                 kind = "markdown",

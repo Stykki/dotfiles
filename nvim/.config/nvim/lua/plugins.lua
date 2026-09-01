@@ -1,7 +1,43 @@
 local HOME = vim.fn.expand("~")
 local local_dev = "file://" .. HOME
+
+-- Make sure external tooling (tree-sitter CLI, compilers) is on PATH *before*
+-- any plugin hook runs. nvim-treesitter needs `tree-sitter`, `curl`, `tar`
+-- and a C compiler to build parsers.
+vim.env.PATH = vim.fn.stdpath("data")
+    .. "/mason/bin:"
+    .. HOME
+    .. "/.cargo/bin:/opt/homebrew/bin:"
+    .. vim.env.PATH
+
+-- nvim-treesitter (main branch) pins parser revisions, so parsers MUST be
+-- rebuilt whenever the plugin itself changes. This is the vim.pack equivalent
+-- of lazy.nvim's `build = ':TSUpdate'`. Registered before `vim.pack.add()` so
+-- it also fires on the very first install.
+vim.api.nvim_create_autocmd("PackChanged", {
+    group = vim.api.nvim_create_augroup("TSPackHook", { clear = true }),
+    callback = function(ev)
+        local data = ev.data
+        if data.spec.name ~= "nvim-treesitter" then
+            return
+        end
+        if data.kind ~= "install" and data.kind ~= "update" then
+            return
+        end
+        if not data.active then
+            vim.cmd.packadd("nvim-treesitter")
+        end
+        vim.cmd("TSUpdate")
+    end,
+})
+
 vim.pack.add({
+    {
+        src = "https://github.com/nvim-treesitter/nvim-treesitter",
+        version = "main",
+    },
     { src = "https://github.com/mason-org/mason.nvim" },
+    { src = "https://github.com/neovim/nvim-lspconfig" },
     { src = "https://github.com/ibhagwan/fzf-lua" },
     { src = "https://github.com/lewis6991/gitsigns.nvim" },
     {
@@ -9,7 +45,7 @@ vim.pack.add({
         version = vim.version.range("^1"),
     },
     { src = "https://github.com/vieitesss/command.nvim", version = "main" },
-    { src = "https://github.com/zbirenbaum/copilot.lua" },
+    -- { src = "https://github.com/zbirenbaum/copilot.lua" },
     { src = "https://github.com/stevearc/oil.nvim" },
     { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
     { src = "https://github.com/folke/snacks.nvim" },
@@ -19,11 +55,48 @@ vim.pack.add({
     { src = "https://github.com/stevearc/conform.nvim" },
 })
 
-vim.env.PATH = vim.fn.stdpath("data")
-    .. "/mason/bin:"
-    .. vim.fn.expand("~/.cargo/bin")
-    .. ":"
-    .. vim.env.PATH
+-- Treesitter: parsers + queries only. Features (highlight/fold/indent) are
+-- enabled by Neovim itself -- see lua/autocmds.lua and lua/configs.lua.
+require("nvim-treesitter").setup({
+    install_dir = vim.fn.stdpath("data") .. "/site",
+})
+
+-- No-op when already installed; runs asynchronously.
+require("nvim-treesitter").install({
+    "lua",
+    "luadoc",
+    "vim",
+    "vimdoc",
+    "query",
+    "json",
+    "yaml",
+    "toml",
+    "rust",
+    "zig",
+    "go",
+    "gomod",
+    "python",
+    "bash",
+    "elixir",
+    "heex",
+    "eex",
+    "surface",
+    "erlang",
+    "typescript",
+    "tsx",
+    "javascript",
+    "wgsl",
+    "latex",
+    "html",
+    "css",
+    "markdown",
+    "markdown_inline",
+    "diff",
+    "gitcommit",
+    "git_rebase",
+    "printf",
+    "regex",
+})
 
 -- Mini icons (load first for other plugins to use)
 require("mini.icons").setup()
@@ -71,20 +144,21 @@ require("which-key").setup({
         { "<leader>c", group = "Command" },
         { "<leader>u", group = "UI/Toggle" },
         { "<leader>r", group = "Rust" },
+        { "<leader>e", group = "Elixir/Mix" },
     },
 })
 
 require("command").setup({})
 require("mason").setup({})
 
--- Copilot (AI completion via LSP)
-require("copilot").setup({
-    suggestion = { enabled = false }, -- We use blink.cmp popup instead
-    panel = { enabled = false },
-})
+-- Copilot (AI completion via LSP) -- disabled
+-- require("copilot").setup({
+--     suggestion = { enabled = false }, -- We use blink.cmp popup instead
+--     panel = { enabled = false },
+-- })
 
 -- Copilot icon highlight (GitHub green)
-vim.api.nvim_set_hl(0, "BlinkCmpKindCopilot", { fg = "#6CC644" })
+-- vim.api.nvim_set_hl(0, "BlinkCmpKindCopilot", { fg = "#6CC644" })
 require("gitsigns").setup({
     signcolumn = false,
     attach_to_untracked = true,
@@ -209,31 +283,7 @@ require("blink.cmp").setup({
     },
 
     sources = {
-        default = { "copilot", "lsp" }, -- Copilot first for priority in menu
-        providers = {
-            copilot = {
-                name = "Copilot",
-                module = "sources.copilot",
-                score_offset = 100, -- Boost Copilot to top of completion list
-                async = true,
-                enabled = function()
-                    return vim.tbl_contains({
-                        "javascript", "javascriptreact",
-                        "typescript", "typescriptreact",
-                        "html", "css", "scss",
-                        "json", "jsonc",
-                        "vue", "svelte", "astro",
-                    }, vim.bo.filetype)
-                end,
-                opts = {
-                    max_completions = 3,
-                    -- TRIGGER BEHAVIOR OPTIONS:
-                    -- debounce = 75,    -- Default: wait 75ms after typing
-                    -- debounce = false, -- Instant: trigger on every keystroke
-                    -- debounce = 200,   -- Slower: fewer API calls, less responsive
-                },
-            },
-        },
+        default = { "lsp" },
     },
 })
 
@@ -304,6 +354,10 @@ require("conform").setup({
     formatters_by_ft = {
         lua = { "stylua" },
         rust = { "rustfmt", lsp_format = "fallback" },
+        elixir = { "mix" },
+        eelixir = { "mix" },
+        heex = { "mix" },
+        surface = { "mix" },
         javascript = js_formatter,
         typescript = js_formatter,
         typescriptreact = js_formatter,
